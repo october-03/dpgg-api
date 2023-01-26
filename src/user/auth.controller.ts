@@ -2,19 +2,28 @@ import { AuthService } from './auth.service';
 import {
   Body,
   Controller,
+  HttpCode,
   HttpException,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { registerUserDto } from 'src/dto/user.dto';
+import { registerUserDto } from 'src/dto/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { LocalAuthGuard } from './localAuth.guard';
+import { Request } from 'express';
+import { User } from './entities/user.entity';
+
+interface RequestUser extends Request {
+  user: User;
+}
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   //계정 생성
-  @Post()
+  @Post('register')
   async register(@Body() req: registerUserDto) {
     const hashedPassword = await bcrypt.hash(req.password, 10);
 
@@ -39,8 +48,14 @@ export class AuthController {
           );
       }
     }
-    // return this.authService.register(req);
   }
 
-  //비밀번호 변경
+  @HttpCode(200)
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Body() req: RequestUser) {
+    const user = req.user;
+    user.password = undefined;
+    return user;
+  }
 }
