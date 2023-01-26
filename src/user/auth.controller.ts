@@ -15,6 +15,7 @@ import { registerUserDto } from 'src/dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { LocalAuthGuard } from './localAuth.guard';
 import RequestUser from './requestUser.interface';
+import JwtAuthGuard from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -61,11 +62,19 @@ export class AuthController {
   }
 
   //토큰 확인
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   authenticate(@Req() request: RequestUser) {
     const user = request.user;
     user.password = undefined;
     return user;
+  }
+
+  //로그아웃
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Req() request: RequestUser, @Res() Response) {
+    Response.setHeader('Set-Cookie', this.authService.getLogoutHeader());
+    return Response.sendStatus(200);
   }
 }

@@ -30,6 +30,10 @@ export class AuthService {
     )}`;
   }
 
+  getLogoutHeader() {
+    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
+
   async register(req: registerUserDto) {
     const newUser: User = this.usersRepository.create({ ...req });
     await this.usersRepository.insert(newUser);
