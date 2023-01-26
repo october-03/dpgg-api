@@ -26,12 +26,6 @@ export class UserController {
     return this.userService.findOne(email);
   }
 
-  //계정 생성
-  @Post()
-  register(@Body() req: registerUserDto) {
-    return this.userService.register(req);
-  }
-
   //계정 삭제
   @Delete(':email')
   remove(@Param('email') email: string) {

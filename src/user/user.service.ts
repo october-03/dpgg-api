@@ -32,12 +32,6 @@ export class UserService {
     await this.usersRepository.delete(email);
   }
 
-  async register(req: registerUserDto) {
-    const newUser: User = this.usersRepository.create({ ...req });
-
-    await this.usersRepository.insert(newUser);
-  }
-
   async updateNickname(email: string, nickname: string): Promise<User> {
     const targetUser: User = await this.findOne(email);
     targetUser.nickname = nickname;
