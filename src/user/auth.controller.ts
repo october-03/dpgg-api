@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Get,
   Req,
   Res,
   UseGuards,
@@ -57,5 +58,14 @@ export class AuthController {
     Response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
     return Response.send(user);
+  }
+
+  //토큰 확인
+  @UseGuards(LocalAuthGuard)
+  @Get()
+  authenticate(@Req() request: RequestUser) {
+    const user = request.user;
+    user.password = undefined;
+    return user;
   }
 }
