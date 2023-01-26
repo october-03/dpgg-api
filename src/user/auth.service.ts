@@ -16,7 +16,7 @@ export class AuthService {
 
   async register(req: registerUserDto) {
     const newUser: User = this.usersRepository.create({ ...req });
-    await this.usersRepository.save(newUser);
+    await this.usersRepository.insert(newUser);
     return newUser;
   }
 
