@@ -6,17 +6,14 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { registerUserDto } from 'src/dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { LocalAuthGuard } from './localAuth.guard';
-import { Request } from 'express';
-import { User } from './entities/user.entity';
-
-interface RequestUser extends Request {
-  user: User;
-}
+import RequestUser from './requestUser.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -50,12 +47,15 @@ export class AuthController {
     }
   }
 
+  //로그인
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() req: RequestUser) {
-    const user = req.user;
+  async login(@Req() request: RequestUser, @Res() Response) {
+    const { user } = request;
+    const cookie = this.authService.getJwt(user.email);
+    Response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
-    return user;
+    return Response.send(user);
   }
 }

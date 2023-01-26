@@ -5,6 +5,12 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+
+export interface TokenPayload {
+  email: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -12,7 +18,17 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private userService: UserService,
+    private configService: ConfigService,
+    private jwtService: JwtService,
   ) {}
+
+  getJwt(email: string) {
+    const payload: TokenPayload = { email };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_EXPIRATION_TIME',
+    )}`;
+  }
 
   async register(req: registerUserDto) {
     const newUser: User = this.usersRepository.create({ ...req });

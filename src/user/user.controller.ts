@@ -7,8 +7,10 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { registerUserDto } from 'src/dto/auth.dto';
+import JwtAuthGuard from './jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -28,12 +30,14 @@ export class UserController {
 
   //계정 삭제
   @Delete(':email')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('email') email: string) {
     return this.userService.remove(email);
   }
 
   //닉네임 변경
   @Patch(':email')
+  @UseGuards(JwtAuthGuard)
   updateNickName(
     @Param('email') email: string,
     @Body('nickname') nickname: string,

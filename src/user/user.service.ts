@@ -22,7 +22,12 @@ export class UserService {
       const user: User = await this.usersRepository.findOne({
         where: { email: email },
       });
-      return user;
+      if (user) {
+        return user;
+      }
+      {
+        throw new NotFoundException('User not found');
+      }
     } catch (err) {
       throw new NotFoundException('User not found');
     }
