@@ -25,7 +25,7 @@ export class TeamController {
   async createTeam(@Body() req: createTeamDto, @Req() request: RequestUser) {
     try {
       if (request.user.team) {
-        throw { code: '5992' };
+        throw { code: '5000' };
       }
       const requestData = {
         ...req,
@@ -35,7 +35,7 @@ export class TeamController {
       return await this.teamService.createTeam(requestData);
     } catch (err) {
       switch (err.code) {
-        case '5992':
+        case '5000':
           throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
         case '23503':
           throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
@@ -57,12 +57,12 @@ export class TeamController {
   async addMember(@Req() req: RequestUser, @Param('teamId') teamId: string) {
     try {
       if (req.user.team) {
-        throw { code: '5992' };
+        throw { code: '5000' };
       }
       return await this.teamService.addMember(teamId, req.user);
     } catch (err) {
       switch (err.code) {
-        case '5992':
+        case '5000':
           throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
         default:
           throw new HttpException('알 수 없는 에러입니다.', 200);
@@ -74,6 +74,23 @@ export class TeamController {
   @Delete('delete')
   @UseGuards(JwtAuthGuard)
   async deleteTeam(@Req() req: RequestUser) {
-    return await this.teamService.remove(req.user.team.key, req.user.email);
+    try {
+      if (!req.user.team) {
+        throw { code: '5001' };
+      }
+      if (req.user.team.leader !== req.user.nickname) {
+        throw { code: '5002' };
+      }
+      return await this.teamService.remove(req.user.team.key, req.user.email);
+    } catch (err) {
+      switch (err.code) {
+        case '5001':
+          throw new HttpException('팀에 참여하지 않았습니다.', 200);
+        case '5002':
+          throw new HttpException('팀장만 삭제할 수 있습니다.', 200);
+        default:
+          throw new HttpException('알 수 없는 에러입니다.', 200);
+      }
+    }
   }
 }
