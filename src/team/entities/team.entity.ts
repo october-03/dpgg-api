@@ -27,7 +27,7 @@ export class Team {
   @Column()
   type: string;
 
-  @Column()
+  @Column({ unique: true })
   leader: string;
 
   @CreateDateColumn()

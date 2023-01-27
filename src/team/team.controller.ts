@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   Patch,
   Post,
@@ -22,12 +23,18 @@ export class TeamController {
   @Post('create')
   @UseGuards(JwtAuthGuard)
   async createTeam(@Body() req: createTeamDto, @Req() request: RequestUser) {
-    const requestData = {
-      ...req,
-      members: [request.user],
-      leader: request.user.nickname,
-    };
-    return await this.teamService.createTeam(requestData);
+    try {
+      const requestData = {
+        ...req,
+        members: [request.user],
+        leader: request.user.nickname,
+      };
+      return await this.teamService.createTeam(requestData);
+    } catch (err) {
+      if (err.code === '23505') {
+        throw new HttpException('팀은 한 개만 생성 가능합니다.', 200);
+      }
+    }
   }
 
   //팀 리스트 조회
