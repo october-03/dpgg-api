@@ -44,9 +44,9 @@ export class TeamController {
   }
 
   //팀 삭제
-  @Delete('delete/:teamId')
+  @Delete('delete')
   @UseGuards(JwtAuthGuard)
-  async deleteTeam(@Req() req: RequestUser, @Param('teamId') teamId: string) {
-    return await this.teamService.remove(teamId, req.user.email);
+  async deleteTeam(@Req() req: RequestUser) {
+    return await this.teamService.remove(req.user.team.key, req.user.email);
   }
 }
