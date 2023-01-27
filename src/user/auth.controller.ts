@@ -28,6 +28,9 @@ export class AuthController {
     const hashedPassword = await bcrypt.hash(req.password, 10);
 
     try {
+      if (req.password.length < 8 && req.password.length > 20) {
+        throw { code: 4000 };
+      }
       const createdUser = await this.authService.register({
         ...req,
         password: hashedPassword,
@@ -39,6 +42,11 @@ export class AuthController {
         case '23505':
           throw new HttpException(
             '이미 존재하는 이메일입니다.',
+            HttpStatus.BAD_REQUEST,
+          );
+        case 4000:
+          throw new HttpException(
+            '비밀번호는 8자 이상 20자 이하로 입력해주세요.',
             HttpStatus.BAD_REQUEST,
           );
         default:
