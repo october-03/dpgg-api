@@ -55,7 +55,19 @@ export class TeamController {
   @Patch('add-member/:teamId')
   @UseGuards(JwtAuthGuard)
   async addMember(@Req() req: RequestUser, @Param('teamId') teamId: string) {
-    return await this.teamService.addMember(teamId, req.user);
+    try {
+      if (req.user.team) {
+        throw { code: '5992' };
+      }
+      return await this.teamService.addMember(teamId, req.user);
+    } catch (err) {
+      switch (err.code) {
+        case '5992':
+          throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
+        default:
+          throw new HttpException('알 수 없는 에러입니다.', 200);
+      }
+    }
   }
 
   //팀 삭제
