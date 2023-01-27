@@ -12,7 +12,9 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    const userList = await this.usersRepository.find();
+    const userList = await this.usersRepository.find({
+      relations: ['team'],
+    });
     // const mappingNickname = userList.map((user) => user.nickname);
     return userList;
   }
@@ -21,6 +23,7 @@ export class UserService {
     try {
       const user: User = await this.usersRepository.findOne({
         where: { email: email },
+        relations: ['team'],
       });
       if (user) {
         return user;

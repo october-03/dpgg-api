@@ -1,7 +1,9 @@
+import { Team } from './../../team/entities/team.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -25,4 +27,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Team, (team) => team.members, { nullable: true })
+  team: Team;
 }
