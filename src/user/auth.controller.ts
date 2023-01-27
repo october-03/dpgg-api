@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { registerUserDto } from 'src/dto/auth.dto';
 import * as bcrypt from 'bcrypt';
@@ -76,5 +77,17 @@ export class AuthController {
   async logout(@Req() request: RequestUser, @Res() Response) {
     Response.setHeader('Set-Cookie', this.authService.getLogoutHeader());
     return Response.sendStatus(200);
+  }
+
+  //비밀번호 일치 확인
+  @UseGuards(JwtAuthGuard)
+  @Get('verify-password/:password')
+  async verifyPassword(
+    @Req() request: RequestUser,
+    @Param('password') password: string,
+  ) {
+    const user = request.user;
+    await this.authService.verifyPassword(password, user.password);
+    throw new HttpException('비밀번호가 일치합니다.', HttpStatus.OK);
   }
 }
