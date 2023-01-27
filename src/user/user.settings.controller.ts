@@ -1,6 +1,5 @@
+import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Body, Controller, Delete } from '@nestjs/common';
-import { registerUserDto } from 'src/dto/auth.dto';
 
 @Controller('user-settings')
 export class UserSettingController {

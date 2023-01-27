@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { registerUserDto } from 'src/dto/auth.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
@@ -11,12 +10,12 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<string[]> {
     const userList = await this.usersRepository.find({
       relations: ['team'],
     });
     const mappingNickname = userList.map((user) => user.nickname);
-    return userList;
+    return mappingNickname;
   }
 
   async findOne(email: string): Promise<User> {
