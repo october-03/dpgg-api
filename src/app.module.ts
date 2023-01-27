@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserModule } from './user/user.module';
       synchronize: true,
     }),
     UserModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
