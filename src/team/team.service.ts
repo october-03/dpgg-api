@@ -38,6 +38,23 @@ export class TeamService {
     }
   }
 
+  async findTeamWithLeader(nickname: string): Promise<Team> {
+    try {
+      const team: Team = await this.teamRepository.findOne({
+        where: { leader: nickname },
+        relations: ['members'],
+      });
+      if (team) {
+        return team;
+      }
+      {
+        throw new NotFoundException('팀을 찾을 수 없습니다.');
+      }
+    } catch (err) {
+      throw new HttpException('잘못된 요청입니다.', 400);
+    }
+  }
+
   async remove(id: string, email: string): Promise<void> {
     await this.userService.removeTeam(email);
     await this.teamRepository.delete(id);

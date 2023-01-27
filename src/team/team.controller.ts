@@ -13,11 +13,15 @@ import {
 import { createTeamDto } from 'src/dto/team.dto';
 import JwtAuthGuard from 'src/user/jwt-auth.guard';
 import RequestUser from 'src/user/requestUser.interface';
+import { UserService } from 'src/user/user.service';
 import { TeamService } from './team.service';
 
 @Controller('team')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) {}
+  constructor(
+    private readonly teamService: TeamService,
+    private readonly userService: UserService,
+  ) {}
 
   //팀 생성
   @Post('create')
@@ -67,6 +71,18 @@ export class TeamController {
         default:
           throw new HttpException('알 수 없는 에러입니다.', 200);
       }
+    }
+  }
+
+  //팀 멤버 삭제
+  @Patch('del-member/:email')
+  @UseGuards(JwtAuthGuard)
+  async removeMember(@Req() req: RequestUser, @Param('email') email: string) {
+    try {
+      await this.teamService.findTeamWithLeader(req.user.nickname);
+      return await this.userService.removeTeam(email);
+    } catch (err) {
+      throw err;
     }
   }
 
