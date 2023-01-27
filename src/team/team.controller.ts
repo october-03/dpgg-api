@@ -24,6 +24,9 @@ export class TeamController {
   @UseGuards(JwtAuthGuard)
   async createTeam(@Body() req: createTeamDto, @Req() request: RequestUser) {
     try {
+      if (request.user.team) {
+        throw { code: '5992' };
+      }
       const requestData = {
         ...req,
         members: [request.user],
@@ -31,8 +34,8 @@ export class TeamController {
       };
       return await this.teamService.createTeam(requestData);
     } catch (err) {
-      if (err.code === '23505') {
-        throw new HttpException('팀은 한 개만 생성 가능합니다.', 200);
+      if (err.code === '5992' || err.code === '23503') {
+        throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
       }
     }
   }
