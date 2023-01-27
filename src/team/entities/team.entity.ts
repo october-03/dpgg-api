@@ -19,11 +19,16 @@ export class Team {
   @Column()
   desc: string;
 
-  @OneToMany(() => User, (user) => user.team, { nullable: true })
+  @OneToMany(() => User, (user) => user.team, {
+    nullable: true,
+  })
   members: User[];
 
   @Column()
   type: string;
+
+  @Column()
+  leader: string;
 
   @CreateDateColumn()
   createdAt: Date;

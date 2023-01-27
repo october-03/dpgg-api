@@ -33,4 +33,7 @@ export class createTeamMemberDto {
 
   @IsArray()
   readonly members: User[];
+
+  @IsString()
+  readonly leader: string;
 }

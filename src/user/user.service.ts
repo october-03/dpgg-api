@@ -15,7 +15,7 @@ export class UserService {
     const userList = await this.usersRepository.find({
       relations: ['team'],
     });
-    // const mappingNickname = userList.map((user) => user.nickname);
+    const mappingNickname = userList.map((user) => user.nickname);
     return userList;
   }
 
@@ -56,5 +56,12 @@ export class UserService {
     const targetUser: User = await this.findOne(email);
     targetUser.position = position;
     return await this.usersRepository.save(targetUser);
+  }
+
+  async removeTeam(email: string): Promise<User> {
+    const targetUser: User = await this.findOne(email);
+    targetUser.team = null;
+    await this.usersRepository.save(targetUser);
+    return targetUser;
   }
 }

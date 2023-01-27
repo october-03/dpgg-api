@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { createTeamDto } from 'src/dto/team.dto';
 import JwtAuthGuard from 'src/user/jwt-auth.guard';
 import RequestUser from 'src/user/requestUser.interface';
@@ -15,6 +25,7 @@ export class TeamController {
     const requestData = {
       ...req,
       members: [request.user],
+      leader: request.user.nickname,
     };
     return await this.teamService.createTeam(requestData);
   }
@@ -23,5 +34,19 @@ export class TeamController {
   @Get()
   async findAll() {
     return await this.teamService.findAll();
+  }
+
+  //팀 멤버 추가
+  @Patch('add-member/:teamId')
+  @UseGuards(JwtAuthGuard)
+  async addMember(@Req() req: RequestUser, @Param('teamId') teamId: string) {
+    return await this.teamService.addMember(teamId, req.user);
+  }
+
+  //팀 삭제
+  @Delete('delete/:teamId')
+  @UseGuards(JwtAuthGuard)
+  async deleteTeam(@Req() req: RequestUser, @Param('teamId') teamId: string) {
+    return await this.teamService.remove(teamId, req.user.email);
   }
 }

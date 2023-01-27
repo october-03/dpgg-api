@@ -28,6 +28,8 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Team, (team) => team.members, { nullable: true })
+  @ManyToOne(() => Team, (team) => team.members, {
+    nullable: true,
+  })
   team: Team;
 }
