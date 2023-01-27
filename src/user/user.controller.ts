@@ -43,4 +43,11 @@ export class UserController {
   updateNickName(@Body('nickname') nickname: string, @Req() req: RequestUser) {
     return this.userService.updateNickname(req.user.email, nickname);
   }
+
+  //팀 탈퇴
+  @Patch('leave-team')
+  @UseGuards(JwtAuthGuard)
+  leaveTeam(@Req() req: RequestUser) {
+    return this.userService.removeTeam(req.user.email);
+  }
 }
