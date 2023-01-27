@@ -34,8 +34,13 @@ export class TeamController {
       };
       return await this.teamService.createTeam(requestData);
     } catch (err) {
-      if (err.code === '5992' || err.code === '23503') {
-        throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
+      switch (err.code) {
+        case '5992':
+          throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
+        case '23503':
+          throw new HttpException('한 개의 팀만 참여 가능합니다.', 200);
+        default:
+          throw new HttpException('알 수 없는 에러입니다.', 200);
       }
     }
   }
