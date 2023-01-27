@@ -7,10 +7,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { registerUserDto } from 'src/dto/auth.dto';
 import JwtAuthGuard from './jwt-auth.guard';
+import RequestUser from './requestUser.interface';
 
 @Controller('users')
 export class UserController {
@@ -36,12 +38,9 @@ export class UserController {
   }
 
   //닉네임 변경
-  @Patch(':email')
+  @Patch()
   @UseGuards(JwtAuthGuard)
-  updateNickName(
-    @Param('email') email: string,
-    @Body('nickname') nickname: string,
-  ) {
-    return this.userService.updateNickname(email, nickname);
+  updateNickName(@Body('nickname') nickname: string, @Req() req: RequestUser) {
+    return this.userService.updateNickname(req.user.email, nickname);
   }
 }
