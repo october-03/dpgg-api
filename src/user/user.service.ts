@@ -51,4 +51,10 @@ export class UserService {
     targetUser.password = password;
     return await this.usersRepository.save(targetUser);
   }
+
+  async updatePosition(email: string, position: string): Promise<User> {
+    const targetUser: User = await this.findOne(email);
+    targetUser.position = position;
+    return await this.usersRepository.save(targetUser);
+  }
 }
