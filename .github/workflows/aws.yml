@@ -32,7 +32,7 @@ on:
 
 env:
   ECR_REPOSITORY: dpgg-match-api           # set this to your Amazon ECR repository name
-  ECS_SERVICE: dpgg-api-cluster                 # set this to your Amazon ECS service name
+  ECS_SERVICE: dpgg-api-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: dpgg-api-cluster                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: dpgg-api-task-defination # set this to the path to your Amazon ECS task definition
                                               # file, e.g. .aws/task-definition.json
@@ -87,7 +87,7 @@ jobs:
           --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Download Task Definition Template
+    - name: Download Task Definition
       run: |
         aws ecs describe-task-definition \
           --task-definition ${{ env.ECS_TASK_DEFINITION }} \
