@@ -7,6 +7,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     credentials: true,
+    origin: 'https://duoplaygg.net',
   });
   await app.listen(3000);
 }
